@@ -447,13 +447,21 @@ function addVideoPreview(nodeType) {
                 if (app.ui.settings.getSettingValue("VHS.AdvancedPreviews", false)) {
                     this.videoEl.src = api.apiURL('/viewvideo?' + new URLSearchParams(params));
                 } else {
-                    previewWidget.videoEl.src = api.apiURL('/view?' + new URLSearchParams(params));
+                    if (params.url) {
+                        previewWidget.videoEl.src = params.url;
+                    } else {
+                        previewWidget.videoEl.src = api.apiURL('/view?' + new URLSearchParams(params));
+                    }
                 }
                 this.videoEl.hidden = false;
                 this.imgEl.hidden = true;
             } else if (params.format?.split('/')[0] == 'image'){
                 //Is animated image
-                this.imgEl.src = api.apiURL('/view?' + new URLSearchParams(params));
+                if (params.url) {
+                    this.imgEl.src = params.url;
+                } else {
+                    this.imgEl.src = api.apiURL('/view?' + new URLSearchParams(params));
+                }
                 this.videoEl.hidden = true;
                 this.imgEl.hidden = false;
             }
@@ -473,7 +481,11 @@ function addPreviewOptions(nodeType) {
         let url = null
         if (previewWidget.videoEl?.hidden == false && previewWidget.videoEl.src) {
             //Use full quality video
-            url = api.apiURL('/view?' + new URLSearchParams(previewWidget.value.params));
+            if (previewWidget.value.params.url) {
+                url = previewWidget.value.params.url;
+            } else {
+                url = api.apiURL('/view?' + new URLSearchParams(previewWidget.value.params));
+            }
         } else if (previewWidget.imgEl?.hidden == false && previewWidget.imgEl.src) {
             url = previewWidget.imgEl.src;
             url = new URL(url);
